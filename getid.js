@@ -69,10 +69,14 @@ document.addEventListener('DOMContentLoaded', function() {
         let lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
         if (reverse) lines = lines.reverse();
         return lines.map(line => {
-            let match = line.match(/(?:\/itm\/|v=|\/video\/|\/watch\/|\/id\/)([\w-]+)/i);
-            if (!match) {
-                match = line.match(/\/([\w-]+)(?:[?#].*)?$/);
+            // Lấy tất cả id dạng số hoặc chữ sau các pattern phổ biến
+            let match = line.match(/(?:\/itm\/|v=|\/video\/|\/watch\/|\/id\/)([\w-]+)/ig);
+            if (match && match.length > 0) {
+                // Nếu có nhiều id, lấy tất cả, mỗi id 1 dòng
+                return match.map(m => m.replace(/.*(?:\/itm\/|v=|\/video\/|\/watch\/|\/id\/)/i, '')).join('\n');
             }
+            // fallback: lấy phần sau dấu / cuối cùng nếu không có query string
+            match = line.match(/\/([\w-]+)(?:[?#].*)?$/);
             return match ? match[1] : '';
         }).filter(Boolean).join('\n');
     }
