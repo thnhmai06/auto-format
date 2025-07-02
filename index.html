@@ -9,31 +9,35 @@
 <body>
     <div class="container">
         <h1>Tự động Format</h1>
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <div style="display: flex; gap: 16px; margin-bottom: 24px; position:relative;" id="tabBar">
+            <button id="tabFormat" class="tab-btn active" type="button">Format</button>
+            <button id="tabGetId" class="tab-btn" type="button">Lấy ID</button>
+            <div class="tab-indicator" id="tabIndicator"></div>
         </div>
-        <div style="position: relative;">
-            <textarea id="input" placeholder="Nhập nội dung cần format..." style="padding-right:40px;"></textarea>
-            <button id="pasteBtn" type="button" title="Dán từ clipboard" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">
-                📋
-            </button>
+        <div id="tabContentFormat">
+            <div style="position: relative;">
+                <textarea id="input" placeholder="Nhập nội dung cần format..." style="padding-right:40px;"></textarea>
+                <button id="pasteBtn" type="button" title="Dán từ clipboard" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">📋</button>
+            </div>
+            <div class="result-label">Kết quả sau khi format:</div>
+            <div style="position: relative;">
+                <pre id="output"></pre>
+                <button id="copyBtn" type="button" title="Copy kết quả" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">✅</button>
+            </div>
         </div>
-        <div class="result-label">Kết quả sau khi format:</div>
-        <div style="position: relative;">
-            <pre id="output"></pre>
-            <button id="copyBtn" type="button" title="Copy kết quả" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">✅</button>
+        <div id="tabContentGetId" style="display:none;">
+            <div style="position: relative;">
+                <textarea id="inputLink" placeholder="Dán link ebay..." style="padding-right:40px; min-height: 60px;"></textarea>
+                <button id="pasteLinkBtn" type="button" title="Dán từ clipboard" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">📋</button>
+            </div>
+            <div class="result-label">ID bóc tách được:</div>
+            <div style="position: relative;">
+                <pre id="outputId"></pre>
+                <button id="copyIdBtn" type="button" title="Copy ID" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">✅</button>
+            </div>
         </div>
     </div>
     <script src="format.js"></script>
-    <script>
-    document.getElementById('copyBtn').onclick = function() {
-        const output = document.getElementById('output').textContent;
-        navigator.clipboard.writeText(output);
-    };
-    document.getElementById('pasteBtn').onclick = async function() {
-        const text = await navigator.clipboard.readText();
-        document.getElementById('input').value = text;
-        document.getElementById('input').dispatchEvent(new Event('input'));
-    };
-    </script>
+    <script src="getid.js"></script>
 </body>
 </html>

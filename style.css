@@ -37,10 +37,83 @@ textarea {
 pre#output {
     background: #f0f4f8;
     border-radius: 6px;
-    padding: 16px;
+    padding: 16px 44px 16px 16px;
     min-height: 80px;
     font-size: 16px;
     white-space: pre-wrap;
     word-break: break-word;
     border: 1px solid #e0e7ef;
+    position: relative;
+}
+pre#outputId {
+    background: #f0f4f8;
+    border-radius: 6px;
+    padding: 16px 44px 16px 16px;
+    min-height: 80px;
+    font-size: 16px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border: 1px solid #e0e7ef;
+    position: relative;
+}
+.tab-btn {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 12px 32px 10px 32px;
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    transition: color 0.2s, background 0.3s;
+    position: relative;
+    z-index: 1;
+}
+.tab-btn.active {
+    color: #2563eb;
+    background: #fff;
+    box-shadow: 0 -2px 12px 0 rgba(37,99,235,0.08);
+}
+.tab-btn:not(.active):hover {
+    color: #2563eb;
+    background: #e0e7ff;
+}
+.tab-indicator {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    background: #2563eb;
+    border-radius: 2px 2px 0 0;
+    transition: all 0.35s cubic-bezier(.4,0,.2,1);
+    z-index: 2;
+}
+button#copyBtn,
+button#copyIdBtn {
+    top: 14px !important;
+    right: 10px !important;
+    /* Đảm bảo nút nằm đúng vị trí với padding mới của pre */
+}
+/* Tab container border effect */
+.container > div[style*="display: flex"] {
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 0;
+    position: relative;
+    z-index: 2;
+}
+
+/* Tab content animation */
+#tabContentFormat, #tabContentGetId {
+    opacity: 1;
+    transform: none;
+    transition: none;
+}
+#tabContentFormat.hide, #tabContentGetId.hide {
+    opacity: 1;
+    transform: none;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    display: none;
 }
