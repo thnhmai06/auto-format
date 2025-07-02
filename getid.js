@@ -1,81 +1,86 @@
-// Tab switching
-const tabFormat = document.getElementById('tabFormat');
-const tabGetId = document.getElementById('tabGetId');
-const tabContentFormat = document.getElementById('tabContentFormat');
-const tabContentGetId = document.getElementById('tabContentGetId');
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab switching
+    const tabFormat = document.getElementById('tabFormat');
+    const tabGetId = document.getElementById('tabGetId');
+    const tabContentFormat = document.getElementById('tabContentFormat');
+    const tabContentGetId = document.getElementById('tabContentGetId');
+    const tabIndicator = document.getElementById('tabIndicator');
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const pasteBtn = document.getElementById('pasteBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const inputLink = document.getElementById('inputLink');
+    const outputId = document.getElementById('outputId');
+    const pasteLinkBtn = document.getElementById('pasteLinkBtn');
+    const copyIdBtn = document.getElementById('copyIdBtn');
+    const reverseLinks = document.getElementById('reverseLinks');
 
-function updateTabIndicator() {
-    const indicator = document.getElementById('tabIndicator');
-    const activeBtn = document.querySelector('.tab-btn.active');
-    if (activeBtn && indicator) {
-        const bar = document.getElementById('tabBar');
-        const rect = bar.getBoundingClientRect();
-        const btnRect = activeBtn.getBoundingClientRect();
-        indicator.style.width = btnRect.width + 'px';
-        indicator.style.left = (btnRect.left - rect.left) + 'px';
-    }
-}
-
-function showTab(tab) {
-    if (tab === 'format') {
-        tabFormat.classList.add('active');
-        tabGetId.classList.remove('active');
-        tabContentFormat.style.display = '';
-        tabContentGetId.style.display = 'none';
-    } else {
-        tabGetId.classList.add('active');
-        tabFormat.classList.remove('active');
-        tabContentFormat.style.display = 'none';
-        tabContentGetId.style.display = '';
-    }
-    updateTabIndicator();
-}
-
-tabFormat.onclick = function() { showTab('format'); };
-tabGetId.onclick = function() { showTab('getid'); };
-// Khởi tạo trạng thái tab
-updateTabIndicator();
-window.addEventListener('resize', updateTabIndicator);
-// Copy & paste for Format tab
-document.getElementById('copyBtn').onclick = function() {
-    const output = document.getElementById('output').textContent;
-    navigator.clipboard.writeText(output);
-};
-document.getElementById('pasteBtn').onclick = async function() {
-    const text = await navigator.clipboard.readText();
-    document.getElementById('input').value = text;
-    document.getElementById('input').dispatchEvent(new Event('input'));
-};
-// Copy & paste for Get ID tab
-document.getElementById('copyIdBtn').onclick = function() {
-    const output = document.getElementById('outputId').textContent;
-    navigator.clipboard.writeText(output);
-};
-document.getElementById('pasteLinkBtn').onclick = async function() {
-    const text = await navigator.clipboard.readText();
-    document.getElementById('inputLink').value = text;
-    document.getElementById('inputLink').dispatchEvent(new Event('input'));
-};
-// Extract ID logic
-function extractIdsFromLinks(text, reverse) {
-    let lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    if (reverse) lines = lines.reverse();
-    return lines.map(line => {
-        // Lấy id dạng số sau /itm/ hoặc id dạng chữ/số sau v= (youtube) hoặc sau /video/ hoặc sau /watch/ hoặc sau /id/
-        let match = line.match(/(?:\/itm\/|v=|\/video\/|\/watch\/|\/id\/)([\w-]+)/i);
-        if (!match) {
-            // fallback: lấy phần sau dấu / cuối cùng nếu không có query string
-            match = line.match(/\/([\w-]+)(?:[?#].*)?$/);
+    function updateTabIndicator() {
+        const activeBtn = document.querySelector('.tab-btn.active');
+        if (activeBtn && tabIndicator) {
+            const bar = document.getElementById('tabBar');
+            const rect = bar.getBoundingClientRect();
+            const btnRect = activeBtn.getBoundingClientRect();
+            tabIndicator.style.width = btnRect.width + 'px';
+            tabIndicator.style.left = (btnRect.left - rect.left) + 'px';
         }
-        return match ? match[1] : '';
-    }).filter(Boolean).join('\n');
-}
+    }
 
-function updateOutputId() {
-    const val = document.getElementById('inputLink').value;
-    const reverse = document.getElementById('reverseLinks').checked;
-    document.getElementById('outputId').textContent = extractIdsFromLinks(val, reverse);
-}
+    function showTab(tab) {
+        if (tab === 'format') {
+            tabFormat.classList.add('active');
+            tabGetId.classList.remove('active');
+            tabContentFormat.style.display = '';
+            tabContentGetId.style.display = 'none';
+        } else {
+            tabGetId.classList.add('active');
+            tabFormat.classList.remove('active');
+            tabContentFormat.style.display = 'none';
+            tabContentGetId.style.display = '';
+        }
+        updateTabIndicator();
+    }
 
-document.getElementById('inputLink').addEventListener('input', updateOutputId);
-document.getElementById('reverseLinks').addEventListener('change', updateOutputId);
+    tabFormat.onclick = function() { showTab('format'); };
+    tabGetId.onclick = function() { showTab('getid'); };
+    updateTabIndicator();
+    window.addEventListener('resize', updateTabIndicator);
+
+    // Copy & paste for Format tab
+    copyBtn.onclick = function() {
+        output && navigator.clipboard.writeText(output.textContent);
+    };
+    pasteBtn.onclick = async function() {
+        const text = await navigator.clipboard.readText();
+        input.value = text;
+        input.dispatchEvent(new Event('input'));
+    };
+    // Copy & paste for Get ID tab
+    copyIdBtn.onclick = function() {
+        outputId && navigator.clipboard.writeText(outputId.textContent);
+    };
+    pasteLinkBtn.onclick = async function() {
+        const text = await navigator.clipboard.readText();
+        inputLink.value = text;
+        inputLink.dispatchEvent(new Event('input'));
+    };
+    // Extract ID logic
+    function extractIdsFromLinks(text, reverse) {
+        let lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        if (reverse) lines = lines.reverse();
+        return lines.map(line => {
+            let match = line.match(/(?:\/itm\/|v=|\/video\/|\/watch\/|\/id\/)([\w-]+)/i);
+            if (!match) {
+                match = line.match(/\/([\w-]+)(?:[?#].*)?$/);
+            }
+            return match ? match[1] : '';
+        }).filter(Boolean).join('\n');
+    }
+    function updateOutputId() {
+        const val = inputLink.value;
+        const reverse = reverseLinks.checked;
+        outputId.textContent = extractIdsFromLinks(val, reverse);
+    }
+    inputLink.addEventListener('input', updateOutputId);
+    reverseLinks.addEventListener('change', updateOutputId);
+});
