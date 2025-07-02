@@ -26,14 +26,21 @@
             </div>
         </div>
         <div id="tabContentGetId" style="display:none;">
-            <div style="position: relative;">
-                <textarea id="inputLink" placeholder="Dán link ebay..." style="padding-right:40px; min-height: 60px;"></textarea>
+            <div style="position: relative; margin-bottom: 10px;">
+                <textarea id="inputLink" placeholder="Dán nhiều link, mỗi link 1 dòng..." style="padding-right:40px; min-height: 80px;"></textarea>
                 <button id="pasteLinkBtn" type="button" title="Dán từ clipboard" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">📋</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <label class="switch">
+                  <input type="checkbox" id="reverseLinks">
+                  <span class="slider"></span>
+                </label>
+                <span>Đảo ngược thứ tự link</span>
             </div>
             <div class="result-label">ID bóc tách được:</div>
             <div style="position: relative;">
                 <pre id="outputId"></pre>
-                <button id="copyIdBtn" type="button" title="Copy ID" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">✅</button>
+                <button id="copyIdBtn" type="button" title="Copy ID" style="position:absolute;top:14px;right:10px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;">✅</button>
             </div>
         </div>
     </div>

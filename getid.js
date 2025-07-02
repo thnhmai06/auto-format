@@ -57,9 +57,25 @@ document.getElementById('pasteLinkBtn').onclick = async function() {
     document.getElementById('inputLink').dispatchEvent(new Event('input'));
 };
 // Extract ID logic
-document.getElementById('inputLink').addEventListener('input', function() {
-    const val = this.value;
-    // Regex lấy số sau /itm/ và trước ? hoặc # hoặc hết chuỗi
-    const match = val.match(/\/itm\/(\d+)/);
-    document.getElementById('outputId').textContent = match ? match[1] : '';
-});
+function extractIdsFromLinks(text, reverse) {
+    let lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (reverse) lines = lines.reverse();
+    return lines.map(line => {
+        // Lấy id dạng số sau /itm/ hoặc id dạng chữ/số sau v= (youtube) hoặc sau /video/ hoặc sau /watch/ hoặc sau /id/
+        let match = line.match(/(?:\/itm\/|v=|\/video\/|\/watch\/|\/id\/)([\w-]+)/i);
+        if (!match) {
+            // fallback: lấy phần sau dấu / cuối cùng nếu không có query string
+            match = line.match(/\/([\w-]+)(?:[?#].*)?$/);
+        }
+        return match ? match[1] : '';
+    }).filter(Boolean).join('\n');
+}
+
+function updateOutputId() {
+    const val = document.getElementById('inputLink').value;
+    const reverse = document.getElementById('reverseLinks').checked;
+    document.getElementById('outputId').textContent = extractIdsFromLinks(val, reverse);
+}
+
+document.getElementById('inputLink').addEventListener('input', updateOutputId);
+document.getElementById('reverseLinks').addEventListener('change', updateOutputId);
